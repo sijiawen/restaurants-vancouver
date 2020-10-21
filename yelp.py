@@ -22,9 +22,7 @@ for offset in range(0, 1000, 50):
         params = {
             'limit': 50, 
             'location': 'Vancouver',
-            'is_closed':'False',
-            'term': 'restaurants',
-            'radius': 40000,
+            #'radius': 40000,
             'offset': offset
         }
 
@@ -34,15 +32,51 @@ for offset in range(0, 1000, 50):
         elif response.status_code == 400:
             print('400 Bad Request')
             break
-df = pd.DataFrame(data)
+df_van = pd.DataFrame(data)
+
+data = []
+for offset in range(0, 1000, 50):
+        params = {
+            'limit': 50, 
+            'location': 'Richmond, BC',
+            #'radius': 40000,
+            'offset': offset
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code == 200:
+            data += response.json()['businesses']
+        elif response.status_code == 400:
+            print('400 Bad Request')
+            break
+df_rich = pd.DataFrame(data)
+
+data = []
+for offset in range(0, 1000, 50):
+        params = {
+            'limit': 50, 
+            'location': 'Surrey, BC',
+            #'radius': 40000,
+            'offset': offset
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code == 200:
+            data += response.json()['businesses']
+        elif response.status_code == 400:
+            print('400 Bad Request')
+            break
+df_surr = pd.DataFrame(data)
+df = pd.concat([df_van, df_rich, df_surr])
+print(df)
 
 #Index(['id', 'alias', 'name', 'image_url', 'is_closed', 'url', 'review_count',
        #'categories', 'rating', 'coordinates', 'transactions', 'price',
        #'location', 'phone', 'display_phone', 'distance']
 
 #create df
-df2 = pd.concat([df["location"].apply(pd.Series), df["categories"].apply(pd.Series), df["coordinates"].apply(pd.Series), df[["name", "price", "rating", "review_count", "distance"]]], axis = 1)
-df3 = pd.concat([df2[0].apply(pd.Series), df2[["name", "latitude", "longitude", "zip_code", "price", "rating", "review_count", "distance"]]], axis = 1).dropna()
+df2 = pd.concat([df["location"].apply(pd.Series), df["categories"].apply(pd.Series), df["coordinates"].apply(pd.Series), df[["name", "price", "rating", "review_count", "distance", "is_closed"]]], axis = 1)
+df3 = pd.concat([df2[0].apply(pd.Series), df2[["name", "latitude", "longitude", "zip_code", "price", "rating", "review_count", "distance", "is_closed"]]], axis = 1).dropna()
 df3["leftzip"] = df3['zip_code'].str[:3]
 df3["price_updated"]= df3["price"].replace('$', 1).replace('$$', 2).replace('$$$', 3).replace('$$$$', 4)
 
@@ -51,9 +85,11 @@ print(df3.describe())
 #percentile 
 #percentile = (df3.quantile([.33, .67], axis = 0))
 
-df3["level"] = np.where(df3["Avg Income"] <= 50000, 1, np.where(df3["Avg Income"] >= 75000, 3, 2))
+df3["level"] = np.where(df3["Avg Income"] < 45000, 1, np.where(df3["Avg Income"] > 65000, 3, 2))
+df3 = df3[df3.is_closed == False]
+df3 = df3[df3.review_count >= 50]
 df3["count"] = 1 #helper column
-print(df3[["name", "leftzip", "price_updated", "rating", "title", "Electoral District", "Avg Income", "level", "count", "review_count", "distance"]])
+print(df3[["name", "leftzip", "price_updated", "rating", "title", "Electoral District", "Avg Income", "level", "count", "review_count", "distance", "is_closed"]])
 #print(df3[["name", "leftzip", "price_updated", "rating", "title", "Electoral District", "Avg Income"]].loc[df3["rating"] == 2.5])
 #print(df3['Code'].isnull().values.any())
 
@@ -67,12 +103,12 @@ corrMatrix = df3[["rating", "price_updated", "distance", "review_count", "Avg In
 sns.heatmap(corrMatrix, annot=True)
 plt.show()
 
-#ax = sns.countplot(x="Electoral District", data=df3)
-#plt.title("restaurant count per district")
-#plt.xticks(
-    #rotation=45, 
-    #horizontalalignment='right')
-#plt.show()
+ax = sns.countplot(x="Electoral District", data=df3)
+plt.title("restaurant count per district")
+plt.xticks(
+    rotation=45, 
+    horizontalalignment='right')
+plt.show()
 
 
 #create charts
@@ -104,11 +140,11 @@ plt.title("avg distance on rating")
 plt.show()
 plt.show()
 
-#ax = sns.violinplot(x="rating", y="Avg Income", data=df3)
-#plt.xlabel('avg rating')
-#plt.ylabel('avg income')
-#plt.title("avg income per rating")
-#plt.show()
+ax = sns.violinplot(x="rating", y="Avg Income", data=df3)
+plt.xlabel('avg rating')
+plt.ylabel('avg income')
+plt.title("avg income per rating")
+plt.show()
 
 #ax = df3.pivot_table(values="count", index="price_updated", columns="level", aggfunc=np.sum).plot(kind="bar")
 #plt.title("restaurant distribution by price")
@@ -152,12 +188,12 @@ df3["high_check"] = np.where(df3["rating"] >= 4, 1, 0)
 
 df3 = df3[["price_updated", "review_count", "low_check", "high_check", "level", "distance"]]
 df4 = df3[df3.level == 1]
-df4 = df4[["distance", "review_count", "low_check"]]
+df4 = df4[["review_count", "price_updated", "low_check"]]
 print(df4)
 print(df4.describe())
 
 df5 = df3[df3.level == 3]
-df5 = df5[["distance", "review_count", "high_check"]]
+df5 = df5[["review_count", "price_updated", "high_check"]]
 print(df5)
 print(df5.describe())
 
@@ -183,8 +219,8 @@ y_pred = svclassifier.predict(X_test)
 print(confusion_matrix(y_test,y_pred))
 print(classification_report(y_test,y_pred))
 plot_decision_regions(X_train, y_train, clf=svclassifier, legend=2)
-plt.xlabel('price')
-plt.ylabel('distance')
+plt.xlabel('review_count')
+plt.ylabel('price')
 plt.title('SVM - high income restaurants in low income model')
 plt.show() 
 
@@ -207,7 +243,7 @@ print(confusion_matrix(y_test,y_pred))
 print(classification_report(y_test,y_pred))
 plot_decision_regions(X_train, y_train, clf=svclassifier, legend=2)
 plt.xlabel('price')
-plt.ylabel('distance')
+plt.ylabel('review_count')
 plt.title('SVM - low income restaurants in high income model')
 plt.show()
 
