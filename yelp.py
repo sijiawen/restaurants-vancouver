@@ -76,7 +76,10 @@ print(df)
 
 #create df
 df2 = pd.concat([df["location"].apply(pd.Series), df["categories"].apply(pd.Series), df["coordinates"].apply(pd.Series), df[["name", "price", "rating", "review_count", "distance", "is_closed"]]], axis = 1)
+print(df2)
 df3 = pd.concat([df2[0].apply(pd.Series), df2[["name", "latitude", "longitude", "zip_code", "price", "rating", "review_count", "distance", "is_closed"]]], axis = 1).dropna()
+print(df3)
+print(df3['title'].nunique())
 df3["leftzip"] = df3['zip_code'].str[:3]
 df3["price_updated"]= df3["price"].replace('$', 1).replace('$$', 2).replace('$$$', 3).replace('$$$$', 4)
 
@@ -95,8 +98,8 @@ print(df3[["name", "leftzip", "price_updated", "rating", "title", "Electoral Dis
 
 #createmap
 fig, ax = plt.subplots()
-ax.plot(df3['longitude'], df3['latitude'], 'o', markersize=1)
-contextily.add_basemap(ax, crs='EPSG:4326')
+ax.plot(df3['longitude'], df3['latitude'], 'o', markersize=2, alpha=0.5)
+contextily.add_basemap(ax, source=contextily.providers.CartoDB.Voyager, crs='EPSG:4326')
 plt.show()
 
 corrMatrix = df3[["rating", "price_updated", "distance", "review_count", "Avg Income"]].corr()
