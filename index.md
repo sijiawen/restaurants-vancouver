@@ -5,17 +5,17 @@
 
 ## Are there biases in Yelp ratings for restaurants in Vancouver with different socioeconomic statuses?
 
-#### Vancouver Restaurants for the Analysis
+#### Vancouver Restaurants 
 
 ![map](Figure_1.png)
 
-This map plots the locations of the restaurants used in this analysis. I analyzed 3000 restaurants in the Metro Vancouver area across 132 categories.
+This map plots the locations of the restaurants used in this analysis. I analyzed 3000 restaurants in the Metro Vancouver, area across 132 categories.
 
 #### Distribution of Vancouver Restaurants by Rating on Yelp
 
 ![Rating Distribution](Figure_4.png)
 
-This graph plots the distribution of restaurants on a 0.5 scale. The x-axis is the restaurant rating, with 5 being the highest. The y-axis is the numbers of restaurants for that rating. This graph suggests that the ratings are normally distributed, with a rating of 4 being the most common.
+This graph plots the distribution of restaurants on a 0.5 scale. The x-axis is the restaurant rating, with 5 being the highest and 1 being the lowest. The y-axis represents the numbers of restaurants in that rating. This graph suggests that the ratings are normally distributed, with a rating of 4 being the most common.
 
 #### Distribution of Vancouver Restaurants by Average Income
 
@@ -39,11 +39,11 @@ There are 42 electoral districts in BC. The restaurants in our dataset are conce
 
 ![Price](Figure_9.png)
 
-This graph plots the distribution of restaurants by review, grouped by socioeconomic level. The x-axis shows the average price of the restaurant, with 1 indicating a cheap restaurant ($) and 4 indicating an expensive restaurant ($$$$). 
+This graph plots the distribution of restaurants by review, grouped by socioeconomic level. The x-axis shows the average price of the restaurant, with 1 indicating a cheap restaurant ($) and 4 indicating an expensive restaurant ($ $ $ $). 
 
-This shows that the majority of restaurants with a 1 rating are from a low socioeconomic neighbourhood. This price level also has the fewest number of restaurants. 
+This shows that the majority of restaurants with a 1 rating are from a low socioeconomic neighbourhood. 
 
-The majority of restaurants are medium priced (have a rating of 2). 
+The majority of restaurants are medium priced (2). 
 
 Expensive price levels (3 and 4) are dominated by restaurants in high socioeconomic neighbourhoods. 
 
@@ -52,7 +52,7 @@ Expensive price levels (3 and 4) are dominated by restaurants in high socioecono
 
 ![Correlation](Figure_2.png)
 
-To investigate restaurants in various socioeconomic neighbourhoods, I trained a regression model using several features. To do this, I looked at the correlation between variables to see which ones had a strong correlation with rating. Our dataset has a few factors relating to restaurant quality. 
+To investigate restaurants in various socioeconomic neighbourhoods, I trained a regression model using several features. To do this, I looked at the correlation between variables to see which ones had a strong correlation with rating. 
 
 None of them have a strong correlation with rating individually. This makes sense because it is inherently the combination of variables the dictates a restaurant's quality (a low price does not necessarily suggest a low rating). 
 
@@ -62,13 +62,13 @@ None of them have a strong correlation with rating individually. This makes sens
 
 - **Price (integer)**: the restaurant's average price, as determined by Yelp users. Possible scored range from $ to $$$$
 
-- **distance (integer)**: the restaurant's distance in meters from the city centre, around Olympic Village. Note that this was not used as a training variable as there is a high variation in distances between low and high socioeconomic areas.
+- **Distance (integer)**: the restaurant's distance in meters from the city centre, around Olympic Village. Note that this was not used as a training variable as there is a high variation in distances between low and high socioeconomic areas.
 
 
 
 ## Classes
 
-My SVM model predicts for two classes, 0 and 1.
+My Support Vector Machine model predicts for two classes, 0 and 1.
 
 - 0 is a "bad" restaurant, meaning a rating <4
 - 1 is a "good" restaurant, meaning a rating >= 4
@@ -88,7 +88,7 @@ For prediction, I put the restaurants in the opposing socioeconomic neighbourhoo
 - low socioeconomic restaurants tested in high socioeconomic model
 - high socioeconomic restaurants tested in low socioeconomic model
 
-Next, I built a Support Vector Graph for each model. By looking at the results, I can evaluate how a restaurant would perform in a different socioeconoic environment.
+Next, I built an SVM graph for each model. By looking at the results, I can evaluate how a restaurant would perform in a different socioeconoic environment.
 
 
 #### High Socioeconomic Restaurants in a Low Socioeconomic model
@@ -100,9 +100,9 @@ This model is trained on features from restaurants in a low socioeconomic neighb
 | n=613       | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 143          | 51           |
-|  Actual: 1  | 274          | 145       \  |
+|  Actual: 1  | 274          | 145          |
 
-Approximately 68% had negative results, and 32% had positive results.
+Approximately 68% were rated "bad" and 32% were rated "good".
 
 
 #### Low Socioeconomic Restaurants in a High Socioeconomic model
@@ -114,13 +114,13 @@ This model is trained on features from restaurants in a high socioeconomic neigh
 | n=343       | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 0            | 176          |
-|  Actual: 1  | 0            | 167       \  |
+|  Actual: 1  | 0            | 167          |
 
-Results were positive 100% of the time.
+Ratings were "good" 100% of the time.
 
 #### Controlling for Restaurant Type
 
-To further investigate the bias, I ran the same models on all Starbucks in Metro Vancouver to hold the restaurant type constant. There are 271 Starbucks in the dataset. Starbucks was chosen because of the high sample size. For this model, I categorized a "good" Starbucks as one with a rating >= 3.5, as Starbucks average a 3.0 or 3.5 in rating.
+To further investigate the bias, I ran the same models on all Starbucks in Metro Vancouver to hold the restaurant type constant. There are 271 Starbucks in the dataset. Starbucks was chosen because of the high sample size. For this model, I categorized a "good" Starbucks as one with a rating >= 3.5, as Starbucks restaurants have an average of 3.0 or 3.5 in rating.
 
 ![Starbucks](Figure_13.png)
 
@@ -129,23 +129,26 @@ Low Socioeconomic model
 | n=109       | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 0            | 20           |
-|  Actual: 1  | 0            | 89        \  |
+|  Actual: 1  | 0            | 89           |
 
 High Socioeconomic model
 
 | n=63        | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 0            | 12           |
-|  Actual: 1  | 0            | 51        \  |
+|  Actual: 1  | 0            | 51           |
 
-Both models predicted a positive result 100% of the time. In the high socioeconomic model, you can visually observe that several Starbucks locations' ratings are being overestimated.
+Both models predicted a "good" rating 100% of the time. In the high socioeconomic model, you can visually observe that several ratings are being overestimated (upper left hand corner, those with low reviews and high price).
 
 
 ## Conclusion
 
 From the regression model training, the high socioeconomic model tends to underestimate the actual data, while the low socioeconomic model tends to overestimate the actual data. This happens 45% of the time for the former, and 51% of the time for the latter. Although this analysis is inconclusive, it implies that there is a bias in restaurant rating based on socioeconomic status in Vancouver. 
 
-This analysis also has many limitations to it:
-- Electoral districts are large, and many not account for region-specific nuances in socioeconomic status. Although this analysis can be improved using census tracts, there is no available data matching postal code Forward Sortation Area (FSA) boundaries to census areas. Unfortunately, there is limited regional specific data available on StatsCanada. Other external data I can consider are crime rates or average house rental price.
-- Yelp's API has limited useful parameters in its endpoint, so only two features were considered in the regression. In the future, I would want to consider additional metrics, such as Health Inspection records or years of operation.
-- There are many qualitative factors that can also influence a restaurant quality, including food quality, location, customer service, and ambience. These factors have not been considered in the analysis
+This analysis has some limitations.
+
+Electoral districts are large, and many not account for region-specific nuances in socioeconomic status. Although this analysis can be improved using census tracts, there is no available data matching postal code Forward Sortation Area (FSA) boundaries to census areas. Unfortunately, there is limited regional specific data available on StatsCanada. 
+
+Yelp's API has limited useful parameters in its endpoint, so only two features were considered in the regression. In the future, I would want to consider additional metrics, such as Health Inspection records or years of operation. Other external datapoints I can consider are crime rates or average house rental price.
+
+There are many qualitative factors that can also influence a restaurant's rating, such as food freshness, location, customer service, and ambience. These factors have not been considered in the analysis
