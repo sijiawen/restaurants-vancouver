@@ -9,7 +9,7 @@
 
 ![map](Figure_1.png)
 
-This map plots the locations of the restaurants used in this analysis. I analyzed 3000 restaurants in the Metro Vancouver, area across 132 categories.
+This map plots the locations of the restaurants used in this analysis. I analyzed 3000 restaurants in the Metro Vancouver area, across 132 categories.
 
 #### Distribution of Vancouver Restaurants by Rating on Yelp
 
@@ -21,7 +21,7 @@ This graph plots the distribution of restaurants on a 0.5 scale. The x-axis is t
 
 ![Income vs Rating](Figure_8.png)
 
-The violin plot shows the distribution of average income at specfiic ratings. It looks like the median point of average income trends lower (around $40k) for low ratings (2.5, 3.0, and 3.5), while it trends relatively higher (around $80k) for high ratings (4.0 and 4.5).
+The violin plot shows the distribution of average income at specfiic ratings. It looks like the median point of average income trends lower (around $40k) for low ratings (2.5, 3.0, and 3.5), while it trends relatively higher (around $60-80k) for high ratings (4.0 and 4.5).
 
 
 
@@ -118,7 +118,7 @@ This model is trained on features from restaurants in a high socioeconomic neigh
 
 Ratings were "good" 100% of the time.
 
-#### Controlling for Restaurant Type
+## Modelling on Starbucks to Control for Restaurant Type
 
 To further investigate the bias, I ran the same models on all Starbucks in Metro Vancouver to hold the restaurant type constant. There are 271 Starbucks in the dataset. Starbucks was chosen because of the high sample size. For this model, I categorized a "good" Starbucks as one with a rating >= 3.5, as Starbucks restaurants have an average of 3.0 or 3.5 in rating.
 
