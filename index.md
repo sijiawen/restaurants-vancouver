@@ -5,19 +5,19 @@
 
 ## Are there biases in Yelp ratings for restaurants in Vancouver with different socioeconomic statuses?
 
-##### Vancouver Restaurants for the Analysis
+#### Vancouver Restaurants for the Analysis
 
 ![map](Figure_1.png)
 
 This map plots the locations of the restaurants used in this analysis. I analyzed 3000 restaurants in the Metro Vancouver area across 132 categories.
 
-##### Distribution of Vancouver Restaurants by Rating on Yelp
+#### Distribution of Vancouver Restaurants by Rating on Yelp
 
 ![Rating Distribution](Figure_4.png)
 
 This graph plots the distribution of restaurants on a 0.5 scale. The x-axis is the restaurant rating, with 5 being the highest. The y-axis is the numbers of restaurants for that rating. This graph suggests that the ratings are normally distributed, with a rating of 4 being the most common.
 
-##### Distribution of Vancouver Restaurants by Average Income
+#### Distribution of Vancouver Restaurants by Average Income
 
 ![Income vs Rating](Figure_8.png)
 
@@ -91,7 +91,7 @@ For prediction, I put the restaurants in the opposing socioeconomic neighbourhoo
 Next, I built a Support Vector Graph for each model. By looking at the results, I can evaluate how a restaurant would perform in a different socioeconoic environment.
 
 
-##### High Socioeconomic Restaurants in a Low Socioeconomic model
+#### High Socioeconomic Restaurants in a Low Socioeconomic model
 
 ![Low model](Figure_10.png)
 
@@ -105,7 +105,7 @@ This model is trained on features from restaurants in a low socioeconomic neighb
 Approximately 68% had negative results, and 32% had positive results.
 
 
-##### Low Socioeconomic Restaurants in a High Socioeconomic model
+#### Low Socioeconomic Restaurants in a High Socioeconomic model
 
 ![High model](Figure_11.png)
 
@@ -118,7 +118,7 @@ This model is trained on features from restaurants in a high socioeconomic neigh
 
 Results were positive 100% of the time.
 
-##### Controlling for Restaurant Type
+#### Controlling for Restaurant Type
 
 To further investigate the bias, I ran the same models on all Starbucks in Metro Vancouver to hold the restaurant type constant. There are 271 Starbucks in the dataset. Starbucks was chosen because of the high sample size. For this model, I categorized a "good" Starbucks as one with a rating >= 3.5, as Starbucks average a 3.0 or 3.5 in rating.
 
