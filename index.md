@@ -100,7 +100,7 @@ This model is trained on features from restaurants in a low socioeconomic neighb
 | n=613       | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 143          | 51           |
-|  Actual: 1  | 274          | 145       \| |
+|  Actual: 1  | 274          | 145       \  |
 
 Approximately 68% had negative results, and 32% had positive results.
 
@@ -111,10 +111,10 @@ Approximately 68% had negative results, and 32% had positive results.
 
 This model is trained on features from restaurants in a high socioeconomic neighbourhood. When testing it on low socioeconomic restaurants, it classifies every single one of the restaurants as "good".
 
-| n=       | Predicted: 0 | Predicted: 1 |
+| n=343       | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 0            | 176          |
-|  Actual: 1  | 0            | 167       \| |
+|  Actual: 1  | 0            | 167       \  |
 
 Results were positive 100% of the time.
 
@@ -125,16 +125,18 @@ To further investigate the bias, I ran the same models on all Starbucks in Metro
 ![Starbucks](Figure_13.png)
 
 Low Socioeconomic model
+
 | n=109       | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 0            | 20           |
-|  Actual: 1  | 0            | 89        \| |
+|  Actual: 1  | 0            | 89        \  |
 
 High Socioeconomic model
-| n=63       | Predicted: 0 | Predicted: 1 |
+
+| n=63        | Predicted: 0 | Predicted: 1 |
 | :---------- | :----------: | -----------: |
 |  Actual: 0  | 0            | 12           |
-|  Actual: 1  | 0            | 51        \| |
+|  Actual: 1  | 0            | 51        \  |
 
 Both models predicted a positive result 100% of the time. In the high socioeconomic model, you can visually observe that several Starbucks locations' ratings are being overestimated.
 
