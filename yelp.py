@@ -16,12 +16,12 @@ api_key = "y33jHkcCZGE6lzQYWLbpn0BQjwrn889ju7-2GPaYW6vG4R6fTlqFYSw8F-rVlF9ZbCBAe
 headers = {'Authorization': 'Bearer %s' % api_key}
 url='https://api.yelp.com/v3/businesses/search'
 
+
 data = []
 for offset in range(0, 1000, 50):
         params = {
             'limit': 50, 
             'location': 'Vancouver',
-            'term': 'restaurants',
             #'radius': 40000,
             'offset': offset
         }
@@ -39,7 +39,6 @@ for offset in range(0, 1000, 50):
         params = {
             'limit': 50, 
             'location': 'Richmond, BC',
-            'term': 'restaurants',
             #'radius': 40000,
             'offset': offset
         }
@@ -57,7 +56,6 @@ for offset in range(0, 1000, 50):
         params = {
             'limit': 50, 
             'location': 'Surrey, BC',
-            'term': 'restaurants',
             #'radius': 40000,
             'offset': offset
         }
@@ -76,90 +74,27 @@ print(df)
        #'categories', 'rating', 'coordinates', 'transactions', 'price',
        #'location', 'phone', 'display_phone', 'distance']
 
-'''
-#test on Starbucks only
-data = []
-for offset in range(0, 1000, 50):
-        params = {
-            'limit': 50, 
-            'location': 'Vancouver',
-            'term': 'Starbucks',
-            #'radius': 40000,
-            'offset': offset
-        }
-
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code == 200:
-            data += response.json()['businesses']
-        elif response.status_code == 400:
-            print('400 Bad Request')
-            break
-df_van = pd.DataFrame(data)
-
-data = []
-for offset in range(0, 1000, 50):
-        params = {
-            'limit': 50, 
-            'location': 'Richmond, BC',
-            'term': 'Starbucks',
-            #'radius': 40000,
-            'offset': offset
-        }
-
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code == 200:
-            data += response.json()['businesses']
-        elif response.status_code == 400:
-            print('400 Bad Request')
-            break
-df_rich = pd.DataFrame(data)
-
-data = []
-for offset in range(0, 1000, 50):
-        params = {
-            'limit': 50, 
-            'location': 'Surrey, BC',
-            'term': 'Starbucks',
-            #'radius': 40000,
-            'offset': offset
-        }
-
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code == 200:
-            data += response.json()['businesses']
-        elif response.status_code == 400:
-            print('400 Bad Request')
-            break
-df_surr = pd.DataFrame(data)
-df = pd.concat([df_van, df_rich, df_surr])
-df = df[df.name == 'Starbucks']
-'''
-
 #create df
 df2 = pd.concat([df["location"].apply(pd.Series), df["categories"].apply(pd.Series), df["coordinates"].apply(pd.Series), df[["name", "price", "rating", "review_count", "distance", "is_closed"]]], axis = 1)
-#print(df2)
+print(df2)
 df3 = pd.concat([df2[0].apply(pd.Series), df2[["name", "latitude", "longitude", "zip_code", "price", "rating", "review_count", "distance", "is_closed"]]], axis = 1).dropna()
-#print(df3)
-#print(df3['title'].nunique())
+print(df3)
+print(df3['title'].nunique())
 df3["leftzip"] = df3['zip_code'].str[:3]
 df3["price_updated"]= df3["price"].replace('$', 1).replace('$$', 2).replace('$$$', 3).replace('$$$$', 4)
 
 df3 = pd.merge(df3, fsa, left_on='leftzip', right_on='Country', how='left')
-#print(df3.describe())
+print(df3.describe())
 #percentile 
 #percentile = (df3.quantile([.33, .67], axis = 0))
 
 df3["level"] = np.where(df3["Avg Income"] < 45000, 1, np.where(df3["Avg Income"] > 65000, 3, 2))
-print(df3)
-#df3 = df3[df3.is_closed == False]
-print(df3)
-#df3 = df3[df3.review_count >= 50]
-print(df3)
+df3 = df3[df3.is_closed == False]
+df3 = df3[df3.review_count >= 50]
 df3["count"] = 1 #helper column
 print(df3[["name", "leftzip", "price_updated", "rating", "title", "Electoral District", "Avg Income", "level", "count", "review_count", "distance", "is_closed"]])
 #print(df3[["name", "leftzip", "price_updated", "rating", "title", "Electoral District", "Avg Income"]].loc[df3["rating"] == 2.5])
 #print(df3['Code'].isnull().values.any())
-
 
 #createmap
 fig, ax = plt.subplots()
@@ -184,12 +119,16 @@ ax = sns.countplot(x="rating", data=df3)
 plt.title("restaurant count per rating")
 plt.show()
 
-ax = sns.countplot(x="title", data=df3)
-plt.xticks(
-    rotation=45, 
-    horizontalalignment='right')
-plt.title("restaurant count per category")
-plt.show()
+#ax = sns.countplot(x="price_updated", data=df3, order=["1", "2", "3", "4"])
+#plt.title("restaurant count per price range")
+#plt.show()
+
+#ax = sns.countplot(x="title", data=df3)
+#plt.xticks(
+    #rotation=45, 
+    #horizontalalignment='right')
+#plt.title("restaurant count per category")
+#plt.show()
 
 ax = sns.violinplot(x="rating", y="price_updated", data=df3)
 plt.xlabel('avg rating')
@@ -210,18 +149,9 @@ plt.ylabel('avg income')
 plt.title("avg income per rating")
 plt.show()
 
-ax = df3.pivot_table(values="count", index="price_updated", columns="level", aggfunc=np.sum).plot(kind="bar")
-plt.title("restaurant distribution by price")
-plt.show()
-
-
-
-
-
-
-
-
-
+#ax = df3.pivot_table(values="count", index="price_updated", columns="level", aggfunc=np.sum).plot(kind="bar")
+#plt.title("restaurant distribution by price")
+#plt.show()
 
 
 
@@ -243,8 +173,7 @@ mean_low = df_low.mean()
 df_high = df3[df3.level == 3]
 df_high = df_high["rating"]
 mean_high = df_high.mean()
-'''
-'''
+
 
 #create helper columns
 df3["low_check"] = np.where(df3["rating"] >= 4, 1, 0)
@@ -261,17 +190,39 @@ df5 = df5[["review_count", "price_updated", "high_check"]]
 print(df5)
 print(df5.describe())
 
-#train in low
 X_low = df4.drop('low_check', axis=1).to_numpy()
 y_low = df4['low_check'].to_numpy()
 X_high = df5.drop('high_check', axis=1).to_numpy()
 y_high = df5['high_check'].to_numpy()
+
+#test model
+from sklearn.svm import SVC
+X_train, X_test, y_train, y_test = train_test_split(
+X_low, y_low, test_size=0.33, random_state=42)
+svclassifier = SVC(kernel='linear')
+svclassifier.fit(X_train, y_train)
+
+y_pred = svclassifier.predict(X_test)
+print(confusion_matrix(y_test,y_pred))
+print(classification_report(y_test,y_pred))
+
+X_train, X_test, y_train, y_test = train_test_split(
+X_high, y_high, test_size=0.33, random_state=42)
+svclassifier = SVC(kernel='linear')
+svclassifier.fit(X_train, y_train)
+
+y_pred = svclassifier.predict(X_test)
+print(confusion_matrix(y_test,y_pred))
+print(classification_report(y_test,y_pred))
+
+#test for bias
 
 X_train = X_low
 X_test = X_high
 y_train = y_low
 y_test = y_high
 
+#train in low
 # Training a classifier
 from sklearn.svm import SVC
 svclassifier = SVC(kernel='linear')
@@ -310,4 +261,3 @@ plt.xlabel('price')
 plt.ylabel('review_count')
 plt.title('SVM - low income restaurants in high income model')
 plt.show()
-
