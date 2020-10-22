@@ -12,7 +12,6 @@ fsa = pd.read_csv('FSA.csv').sort_values(by=['Avg Income'])
 #print(fsa)
 
 #import yelp api
-api_key = "y33jHkcCZGE6lzQYWLbpn0BQjwrn889ju7-2GPaYW6vG4R6fTlqFYSw8F-rVlF9ZbCBAeNiRe6pjRI019VlgAHJ6e7wHW_0ScuPyl3fOrX2z7EP8-qX7HWxer8-NX3Yx" #  Replace this with your real API key
 headers = {'Authorization': 'Bearer %s' % api_key}
 url='https://api.yelp.com/v3/businesses/search'
 
